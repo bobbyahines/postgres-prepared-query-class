@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespaceApp;
 
 
 class Database
 {
-  
+
     /**
      * @var \PDO|string
      */
-    public \PDO|string $connection;
+    private \PDO|string $connection;
 
     /**
      * @const string
@@ -71,5 +71,21 @@ class Database
 
             return $e->getTraceAsString();
         }
+    }
+
+    /**
+     * @param string $sql
+     * @return array|false
+     */
+    public function preparedQuery(string $sql, array $params = []): array|bool
+    {
+
+        $queryString = $params
+            ? sprintf($sql, ...$params)
+            : $sql;
+
+        $query = $this->connection->query($queryString);
+
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
